@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.lease.web.app.mapper.PaymentRecordMapper">
+
+    <resultMap id="PaymentRecordVoMap" type="com.atguigu.lease.web.app.vo.myroom.PaymentRecordVo" autoMapping="true">
+        <id column="id" property="id"/>
+    </resultMap>
+
+    <select id="pagePaymentRecordByUserId" resultMap="PaymentRecordVoMap">
+        SELECT pr.*,
+               ri.room_number,
+               CASE pr.type
+                   WHEN 1 THEN '租金'
+                   WHEN 2 THEN '押金'
+                   WHEN 3 THEN '水电费'
+                   WHEN 4 THEN '物业费'
+                   WHEN 5 THEN '其他'
+                   END AS type_name,
+               CASE pr.status
+                   WHEN 1 THEN '未支付'
+                   WHEN 2 THEN '已支付'
+                   WHEN 3 THEN '逾期'
+                   END AS status_name
+        FROM payment_record pr
+                 LEFT JOIN room_info ri ON pr.room_id = ri.id AND ri.is_deleted = 0
+        WHERE pr.is_deleted = 0
+          AND pr.user_id = #{userId}
+        ORDER BY pr.due_date ASC
+    </select>
+
+    <select id="selectUnpaidTotal" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(amount), 0)
+        FROM payment_record
+        WHERE is_deleted = 0
+          AND user_id = #{userId}
+          AND status = 1
+          AND due_date &lt; CURDATE()
+    </select>
+
+</mapper>

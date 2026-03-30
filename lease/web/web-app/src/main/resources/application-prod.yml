@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    # Use localhost corresponding to the exposed docker ports
+    url: jdbc:mysql://localhost:3306/shangting?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2b8
+    username: root
+    password: root
+  data:
+    redis:
+      # Use localhost to connect to the exposed docker redis
+      host: localhost
+      port: 6379
+      database: 0
+

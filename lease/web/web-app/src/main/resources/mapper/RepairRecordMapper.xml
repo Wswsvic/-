@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.lease.web.app.mapper.RepairRecordMapper">
+
+    <resultMap id="RepairRecordVoMap" type="com.atguigu.lease.web.app.vo.myroom.RepairRecordVo" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="room_number" property="roomNumber" />
+        <result column="apartment_name" property="apartmentName" />
+        <result column="type_name" property="typeName" />
+        <result column="status_name" property="statusName" />
+    </resultMap>
+
+    <select id="pageRepairRecordByUserId" resultMap="RepairRecordVoMap">
+        SELECT rr.*,
+               ri.room_number,
+               ai.name AS apartment_name,
+               CASE rr.type
+                   WHEN 1 THEN '水电问题'
+                   WHEN 2 THEN '家具问题'
+                   WHEN 3 THEN '家电问题'
+                   WHEN 4 THEN '网络问题'
+                   WHEN 5 THEN '其他'
+                   END AS type_name,
+               CASE rr.status
+                   WHEN 1 THEN '待处理'
+                   WHEN 2 THEN '处理中'
+                   WHEN 3 THEN '已完成'
+                   WHEN 4 THEN '已取消'
+                   END AS status_name
+        FROM repair_record rr
+                 LEFT JOIN room_info ri ON rr.room_id = ri.id AND ri.is_deleted = 0
+                 LEFT JOIN apartment_info ai ON ri.apartment_id = ai.id AND ai.is_deleted = 0
+        WHERE rr.is_deleted = 0
+          AND rr.user_id = #{userId}
+        ORDER BY rr.create_time DESC
+    </select>
+
+</mapper>
