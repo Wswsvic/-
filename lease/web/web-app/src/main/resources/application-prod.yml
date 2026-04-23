@@ -1,7 +1,7 @@
 spring:
   datasource:
     # Use localhost corresponding to the exposed docker ports
-    url: jdbc:mysql://localhost:3306/shangting?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2b8
+    url: jdbc:mysql://10.0.0.5:3306/shangting?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2b8
     username: root
     password: root
   data:
